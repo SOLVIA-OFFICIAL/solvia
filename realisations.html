@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Réalisations – Solvia</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;700;800&family=Public+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  color-scheme: light;
+  --paper:#F3F6F8; --card:#FFFFFF; --ink:#0F2233; --muted:#4B5F70;
+  --green:#0A7B4F; --on-green:#FFFFFF; --yellow:#F4B400; --line:#D3DEE5;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme: dark;
+    --paper:#0C1822; --card:#13232F; --ink:#EAF1F5; --muted:#9DB1BF;
+    --green:#2FBF85; --on-green:#06231A; --yellow:#F4B400; --line:#25394A;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme: dark;
+  --paper:#0C1822; --card:#13232F; --ink:#EAF1F5; --muted:#9DB1BF;
+  --green:#2FBF85; --on-green:#06231A; --yellow:#F4B400; --line:#25394A;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:"Public Sans",system-ui,-apple-system,"Segoe UI",sans-serif;font-size:17px;line-height:1.6}
+h1,h2,h3{font-family:"Bricolage Grotesque","Trebuchet MS",system-ui,sans-serif;line-height:1.1;margin:0}
+.wrap{max-width:1040px;margin:0 auto;padding:0 20px}
+header{display:flex;justify-content:space-between;align-items:center;padding:18px 0}
+.logo{font-family:"Bricolage Grotesque",system-ui,sans-serif;font-weight:800;font-size:26px;letter-spacing:-.02em;color:var(--ink);text-decoration:none}
+.logo i{display:inline-block;width:10px;height:10px;background:var(--yellow);border-radius:50%;margin-left:3px}
+.btn{display:inline-block;background:var(--green);color:var(--on-green);font-weight:600;font-size:17px;text-decoration:none;border:0;border-radius:10px;padding:14px 22px;cursor:pointer;font-family:inherit}
+.btn.small{padding:10px 16px;font-size:15px}
+.btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}
+a:focus-visible,button:focus-visible{outline:3px solid var(--yellow);outline-offset:2px}
+.nav{display:flex;gap:18px;align-items:center}
+.nav a.lien{color:var(--ink);font-weight:600;text-decoration:none}
+h1{font-size:clamp(34px,7vw,56px);font-weight:800;letter-spacing:-.03em;margin:28px 0 14px;max-width:18ch}
+.lead{color:var(--muted);max-width:52ch;margin:0 0 36px;font-size:19px}
+.grid{display:grid;gap:16px;padding-bottom:48px}
+@media (min-width:760px){.grid{grid-template-columns:repeat(2,1fr)}}
+.card{background:var(--card);border:1px solid var(--line);border-left:6px solid var(--yellow);border-radius:12px;padding:22px;display:flex;flex-direction:column;gap:10px}
+.card h3{font-size:22px}
+.card p{margin:0;color:var(--muted)}
+.tag{align-self:flex-start;background:var(--yellow);color:#1A1400;font-weight:600;font-size:14px;padding:2px 10px;border-radius:6px}
+.card blockquote{margin:6px 0 0;padding:0;color:var(--ink);font-size:18px}
+.card cite{font-style:normal;color:var(--muted);font-size:15px}
+.card .btn{align-self:flex-start;margin-top:8px}
+.soon{color:var(--muted);font-style:italic;margin-top:8px}
+.cta{border-top:1px solid var(--line);padding:40px 0 56px}
+.cta h2{font-size:clamp(26px,5vw,36px);font-weight:700;margin-bottom:16px}
+dialog{width:min(960px,96vw);height:min(720px,90vh);padding:0;border:1px solid var(--line);border-radius:14px;background:var(--card);color:var(--ink)}
+dialog::backdrop{background:rgba(5,15,25,.6)}
+.bar{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid var(--line)}
+.bar strong{font-family:"Bricolage Grotesque",system-ui,sans-serif;font-size:18px}
+.bar div{display:flex;gap:10px}
+iframe{width:100%;height:calc(100% - 62px);border:0;background:#fff}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <a class="logo" href="index.html" aria-label="Solvia, accueil">Solvia<i></i></a>
+    <nav class="nav">
+      <a class="lien" href="index.html">Accueil</a>
+      <a class="btn small" href="index.html#demande">Décrire mon besoin</a>
+    </nav>
+  </header>
+
+  <main>
+    <h1>Nos réalisations, à tester vous-même.</h1>
+    <p class="lead">Ouvrez chaque projet et essayez-le directement, comme si c’était votre outil.</p>
+    <div class="grid" id="liste"></div>
+
+    <div class="cta">
+      <h2>Un besoin similaire ? Parlons de votre projet.</h2>
+      <a class="btn" href="index.html#demande">Décrire mon besoin</a>
+    </div>
+  </main>
+</div>
+
+<dialog id="dlg" aria-labelledby="dlg-titre">
+  <div class="bar">
+    <strong id="dlg-titre"></strong>
+    <div>
+      <a class="btn small ghost" id="dlg-ext" href="#" target="_blank" rel="noopener">Plein écran</a>
+      <button class="btn small" id="dlg-fermer" type="button">Fermer</button>
+    </div>
+  </div>
+  <iframe id="dlg-frame" title="Démo du projet" sandbox="allow-scripts allow-forms allow-same-origin allow-modals"></iframe>
+</dialog>
+
+<script>
+/* POUR AJOUTER UNE RÉALISATION : copie un bloc { ... } ci-dessous et remplis-le.
+   - demo : chemin du fichier de démo (ex. "mon-projet.html", dans le même dossier que cette page) ou lien https. Laisse "" si pas de démo.
+   - temoignage / auteur : laisse "" tant que le client n’a pas donné son accord. */
+var PROJETS = [
+  {
+    nom: "Gestion de stock pour boutique",
+    tag: "Démo Solvia",
+    probleme: "Savoir à tout moment ce qu’il reste en rayon, sans cahier.",
+    resultat: "Ajout de produits, ventes en un clic et alerte quand le stock est bas.",
+    demo: "demo-stock.html",
+    temoignage: "",
+    auteur: ""
+  },
+  {
+    nom: "Générateur de factures",
+    tag: "Démo Solvia",
+    probleme: "Faire des factures propres sans les recopier à la main.",
+    resultat: "Lignes de produits, total calculé automatiquement, impression ou PDF en un clic.",
+    demo: "demo-facture.html",
+    temoignage: "",
+    auteur: ""
+  }
+];
+
+var liste = document.getElementById("liste");
+var dlg = document.getElementById("dlg");
+var frame = document.getElementById("dlg-frame");
+
+function el(tag, cls, txt){
+  var e = document.createElement(tag);
+  if(cls) e.className = cls;
+  if(txt) e.textContent = txt;
+  return e;
+}
+
+PROJETS.forEach(function(p){
+  var c = el("article","card");
+  if(p.tag) c.appendChild(el("span","tag",p.tag));
+  c.appendChild(el("h3","",p.nom));
+  c.appendChild(el("p","","Problème : " + p.probleme));
+  c.appendChild(el("p","","Résultat : " + p.resultat));
+  if(p.temoignage){
+    c.appendChild(el("blockquote","","« " + p.temoignage + " »"));
+    c.appendChild(el("cite","",p.auteur));
+  }
+  if(p.demo){
+    var b = el("button","btn","Tester ce projet");
+    b.type = "button";
+    b.addEventListener("click", function(){
+      document.getElementById("dlg-titre").textContent = p.nom;
+      document.getElementById("dlg-ext").href = p.demo;
+      frame.src = p.demo;
+      dlg.showModal();
+    });
+    c.appendChild(b);
+  } else {
+    c.appendChild(el("p","soon","Démo bientôt disponible."));
+  }
+  liste.appendChild(c);
+});
+
+function fermer(){ dlg.close(); frame.src = "about:blank"; }
+document.getElementById("dlg-fermer").addEventListener("click", fermer);
+dlg.addEventListener("click", function(e){ if(e.target === dlg) fermer(); });
+</script>
+</body>
+</html>

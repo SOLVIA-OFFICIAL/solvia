@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Démo – Facturation</title>
+<style>
+:root{--paper:#F3F6F8;--card:#fff;--ink:#0F2233;--muted:#4B5F70;--green:#0A7B4F;--on-green:#fff;--line:#D3DEE5}
+@media (prefers-color-scheme: dark){:root{--paper:#0C1822;--card:#13232F;--ink:#EAF1F5;--muted:#9DB1BF;--green:#2FBF85;--on-green:#06231A;--line:#25394A}}
+*{box-sizing:border-box}
+body{margin:0;padding:18px;background:var(--paper);color:var(--ink);font:16px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif}
+.doc{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:20px;max-width:720px;margin:0 auto}
+h1{font-size:22px;margin:0}
+.top{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:16px}
+.top p{margin:0;color:var(--muted)}
+label{display:grid;gap:4px;font-weight:600;font-size:14px;margin-bottom:14px}
+input{font:inherit;color:var(--ink);background:var(--paper);border:1px solid var(--line);border-radius:8px;padding:9px 10px;width:100%}
+table{width:100%;border-collapse:collapse;margin-bottom:12px}
+th{text-align:left;font-size:14px;color:var(--muted);padding:6px 4px;border-bottom:1px solid var(--line)}
+td{padding:6px 4px;border-bottom:1px solid var(--line);vertical-align:middle}
+td input{padding:7px 8px}
+.q{width:64px}.p{width:100px}.t{text-align:right;white-space:nowrap;font-weight:600}
+button{font:inherit;font-weight:600;border:0;border-radius:8px;padding:10px 14px;cursor:pointer;background:var(--green);color:var(--on-green)}
+button.g{background:transparent;color:var(--ink);border:1px solid var(--line)}
+button:focus-visible,input:focus-visible{outline:3px solid #F4B400;outline-offset:2px}
+.tot{display:flex;justify-content:space-between;font-size:20px;font-weight:700;padding:12px 0}
+.act{display:flex;gap:10px;flex-wrap:wrap}
+@media print{body{background:#fff;color:#000;padding:0}.doc{border:0}.act,.x,.noprint{display:none!important}input{border:0;background:transparent;color:#000;padding:0}}
+</style>
+</head>
+<body>
+<div class="doc">
+  <div class="top">
+    <div><h1>Facture n° <span id="num">FAC-001</span></h1><p id="date"></p></div>
+    <p><strong>Boutique Exemple</strong><br>Porto-Novo, Bénin</p>
+  </div>
+  <label>Client<input id="cl" value="Client exemple" aria-label="Nom du client"></label>
+  <table>
+    <thead><tr><th>Désignation</th><th>Qté</th><th>Prix (F)</th><th class="t">Total</th><th class="x"></th></tr></thead>
+    <tbody id="lg"></tbody>
+  </table>
+  <div class="act noprint"><button type="button" class="g" id="add">Ajouter une ligne</button></div>
+  <div class="tot"><span>Total à payer</span><span id="tt">0 F CFA</span></div>
+  <div class="act"><button type="button" id="pr">Imprimer ou enregistrer en PDF</button></div>
+</div>
+<script>
+var lignes = [{d:"Riz (sac)",q:2,p:15000},{d:"Huile (bidon)",q:1,p:8500}];
+var lg = document.getElementById("lg");
+var fmt = function(n){ return n.toLocaleString("fr-FR") + " F CFA"; };
+document.getElementById("date").textContent = "Date : " + new Date().toLocaleDateString("fr-FR");
+function champ(cls, val, type, maj){
+  var i = document.createElement("input"); i.value = val; if(type) i.type = type; if(cls) i.className = cls;
+  i.addEventListener("input", function(){ maj(type === "number" ? (parseFloat(i.value) || 0) : i.value); calc(); });
+  return i;
+}
+function dessiner(){
+  lg.innerHTML = "";
+  lignes.forEach(function(l, k){
+    var tr = document.createElement("tr");
+    var c1 = document.createElement("td"); c1.appendChild(champ("", l.d, "", function(v){ l.d = v; }));
+    var c2 = document.createElement("td"); c2.appendChild(champ("q", l.q, "number", function(v){ l.q = v; l.t.textContent = fmt(l.q*l.p); }));
+    var c3 = document.createElement("td"); c3.appendChild(champ("p", l.p, "number", function(v){ l.p = v; l.t.textContent = fmt(l.q*l.p); }));
+    var c4 = document.createElement("td"); c4.className = "t"; c4.textContent = fmt(l.q*l.p); l.t = c4;
+    var c5 = document.createElement("td"); c5.className = "x";
+    var x = document.createElement("button"); x.type = "button"; x.className = "g"; x.textContent = "×"; x.setAttribute("aria-label","Supprimer la ligne");
+    x.onclick = function(){ lignes.splice(k,1); dessiner(); };
+    c5.appendChild(x);
+    tr.append(c1,c2,c3,c4,c5); lg.appendChild(tr);
+  });
+  calc();
+}
+function calc(){ document.getElementById("tt").textContent = fmt(lignes.reduce(function(s,l){ return s + l.q*l.p; },0)); }
+document.getElementById("add").onclick = function(){ lignes.push({d:"",q:1,p:0}); dessiner(); };
+document.getElementById("pr").onclick = function(){ window.print(); };
+dessiner();
+</script>
+</body>
+</html>

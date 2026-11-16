@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Démo – Gestion de stock</title>
+<style>
+:root{--paper:#F3F6F8;--card:#fff;--ink:#0F2233;--muted:#4B5F70;--green:#0A7B4F;--on-green:#fff;--warn:#B3261E;--line:#D3DEE5}
+@media (prefers-color-scheme: dark){:root{--paper:#0C1822;--card:#13232F;--ink:#EAF1F5;--muted:#9DB1BF;--green:#2FBF85;--on-green:#06231A;--warn:#FF8A80;--line:#25394A}}
+*{box-sizing:border-box}
+body{margin:0;padding:18px;background:var(--paper);color:var(--ink);font:16px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif}
+h1{font-size:22px;margin:0 0 4px}
+p.s{color:var(--muted);margin:0 0 16px}
+form{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+input{font:inherit;color:var(--ink);background:var(--card);border:1px solid var(--line);border-radius:8px;padding:10px 12px}
+#n{flex:2 1 140px}#q{flex:1 1 80px}
+button{font:inherit;font-weight:600;border:0;border-radius:8px;padding:10px 14px;cursor:pointer;background:var(--green);color:var(--on-green)}
+button.m{background:transparent;color:var(--ink);border:1px solid var(--line);min-width:42px}
+button:focus-visible,input:focus-visible{outline:3px solid #F4B400;outline-offset:2px}
+.it{display:flex;align-items:center;gap:10px;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 14px;margin-bottom:8px}
+.it .nom{flex:1;font-weight:600}
+.it .qte{min-width:44px;text-align:center;font-size:18px;font-weight:700}
+.bas{border-color:var(--warn)}
+.bas .qte{color:var(--warn)}
+.al{color:var(--warn);font-size:14px;font-weight:600}
+</style>
+</head>
+<body>
+<h1>Mon stock</h1>
+<p class="s">Ajoutez un produit, utilisez + et − pour suivre les ventes. Alerte sous 4 unités.</p>
+<form id="f">
+  <input id="n" placeholder="Produit" aria-label="Produit" required>
+  <input id="q" type="number" min="0" placeholder="Qté" aria-label="Quantité" required>
+  <button type="submit">Ajouter</button>
+</form>
+<div id="l"></div>
+<script>
+var stock = [{n:"Riz (sac)",q:12},{n:"Huile (bidon)",q:3},{n:"Sucre (kg)",q:8}];
+var l = document.getElementById("l");
+function dessiner(){
+  l.innerHTML = "";
+  stock.forEach(function(p,i){
+    var d = document.createElement("div"); d.className = "it" + (p.q < 4 ? " bas" : "");
+    var n = document.createElement("span"); n.className = "nom"; n.textContent = p.n;
+    var al = document.createElement("span"); al.className = "al"; al.textContent = p.q < 4 ? "Stock bas" : "";
+    var m = document.createElement("button"); m.className = "m"; m.type = "button"; m.textContent = "−"; m.setAttribute("aria-label","Retirer une unité de " + p.n);
+    var q = document.createElement("span"); q.className = "qte"; q.textContent = p.q;
+    var a = document.createElement("button"); a.className = "m"; a.type = "button"; a.textContent = "+"; a.setAttribute("aria-label","Ajouter une unité à " + p.n);
+    m.onclick = function(){ if(stock[i].q > 0){ stock[i].q--; dessiner(); } };
+    a.onclick = function(){ stock[i].q++; dessiner(); };
+    d.append(n, al, m, q, a); l.appendChild(d);
+  });
+}
+document.getElementById("f").addEventListener("submit", function(e){
+  e.preventDefault();
+  var n = document.getElementById("n"), q = document.getElementById("q");
+  stock.push({n:n.value.trim(), q:parseInt(q.value,10) || 0});
+  n.value = ""; q.value = ""; dessiner();
+});
+dessiner();
+</script>
+</body>
+</html>
